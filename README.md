@@ -1,29 +1,64 @@
-# README #
+## Features included
+ * Security (token deny list, helmet, more to come...)
+ * Database integrations (Postgres)
+ * Flexible architecture
+ * Strongly-typed codebase (written in Typescript)
+ * Interactive API documentation using Swagger UI (Open API spec)
+ * Automated testing (including integration tests for API routes)
+   * Jest unit and integration tests (`npm test`)
+ * For naming and conventions follow Airbnb style guide.
+   `https://github.com/airbnb/javascript`
 
-This README would normally document whatever steps are necessary to get your application up and running.
+# Usage (quick start)
+ 1. clone the repo
+ 2. `npm install`
+ 3. Setup temp environment configs (TEST only)
+    * RUN in CLI from project root `./setenv.sh`
+ 4. Make note of generated files and change to your preferences
+    * IMPORTANT: when deploying app, don't use the `.env` file, simply set vars in your CI provider or container manager
+ 5. `docker-compose up`
+    * This will spin up Postgres, PGAdmin and Redis
+    * To stop them, and remove local volumes: `docker-compose down -v`
+ 6. Run tests (will load up test data in tables)
+    * `npm run test`
+ 7. Start up app in developer mode (will watch and recompile for changes)
+    * `npm run dev`
+ 8. Open browser tab to [Swagger UI Explorer](http://localhost:3000/api-docs) to explore API
+ 9. Open browser tab to [Postgres Admin](http://localhost:9090/browser) for Postgres Admin
+     * click on "Servers" and then "Object > Create > Server"
+     * "General > Name" the connection "MyApp"
+     * click on "Connection" tab:
+       * Host: `postgres` (network exposed by docker-compose)
+       * Password: `admin` (or whatever you set in ENV vars)
+     * click on "Save"
+     * traverse "Servers > MyApp > Databases > myapp_dev_db > Schemas > public"
 
-### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+# Testing
+This app includes automated tests using **Supertest** and **Substitute** to test routes, etc.
+ * `npm run test` or `npm run coverage`
+ * NOTE: the Docker database must be running (see Step 5 above)
+ * SEE: `__tests__` folders in application for test source code
 
-### How do I get set up? ###
+## Adding new services
+You can follow along the commit history relating to the issues (closed) and see how, but a general idea is:
+ 1. add a new route in the `src/app/controller/` folder
+ 5. Edit `src/app/config/openapi.json` and add routes to documentation (if REST implementation)
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+# Resources
+ * [Methodology: 12-factor](https://12factor.net/)
+ * [Language: Typescript](https://www.typescriptlang.org/)
+ * [Framework: Express](https://expressjs.com/)
+ * [Documentation: Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/)
+ * [Documentation: OpenAPI](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md)
+ * [Config: Dotenv](https://www.npmjs.com/package/dotenv)
+ * [Logging: Winston](https://www.npmjs.com/package/winston)
+ * [Security: Helmet](https://www.npmjs.com/package/helmet)
+ * [Validation: Class Validator](https://www.npmjs.com/package/class-validator)
+ * [Database: TypeORM](https://www.npmjs.com/package/typeorm)
+ * [Database: PostgreSQL](https://www.postgresql.org/)
+ * [Database: Redis](https://redis.io/commands/)
+ * [Testing: Supertest](https://www.npmjs.com/package/supertest)
+ * [Testing: Docker Compose](https://docs.docker.com/compose/)
+ * [Style Guide: Airbnb](https://github.com/airbnb/javascript)
+ 
