@@ -2,8 +2,9 @@ import { getManager, Repository } from "typeorm";
 import { UserDto } from "../dto/UserDto";
 import { User } from "../entity/User";
 import { UserDao } from "./UserDao";
-import UserNotFoundException from "../exception/UserNotFoundException";
 import logger from "../config/logger";
+import EntityNotFoundException from "../exception/EntityNotFoundException";
+import { ErrorCodes } from "../util/errorCode";
 
 /**
  * Handles CRUD operations on User data in database
@@ -36,7 +37,8 @@ class UserDaoImpl implements UserDao {
 
     if (!userDetail) {
       logger.error(`Error while getUserById: ${userId}`);
-      throw new UserNotFoundException(userId);
+      const error = ErrorCodes.USER_WITH_ID_NOT_FOUND;
+      throw new EntityNotFoundException(error);
     }
     return userDetail;
   }

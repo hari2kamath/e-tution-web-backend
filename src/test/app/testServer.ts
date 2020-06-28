@@ -1,5 +1,6 @@
+import "reflect-metadata";
 import App from "../../app/app";
-import Controller from "../../app/util/rest/controller";
+import { Controller } from "../../app/util/rest/controller";
 import { Application } from "express";
 import request from "supertest";
 import supertest from "supertest";

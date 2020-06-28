@@ -1,14 +1,10 @@
-
 import { expect } from "chai";
 import { UserDao } from "../../../app/repository/UserDao";
 import UserDaoImpl from "../../../app/repository/UserDaoImpl";
-import { createConnection, Connection } from "typeorm";
-import rdbmsConfig from "../../../app/config/rdbms";
 import { clearDb } from "../util/clearDb";
 
 describe("UserDaoTest", () => {
     let userDao: UserDao;
-    let connection: Connection;
 
     const sampleUser = {
         name: "test name1",
@@ -17,11 +13,10 @@ describe("UserDaoTest", () => {
 
     before("initialise", async () => {
         userDao = new UserDaoImpl();
-        connection = await createConnection(rdbmsConfig);
-        await clearDb(connection, "user");
+        await clearDb("user");
     });
     after("delete data", async () => {
-        await clearDb(connection, "user");
+        await clearDb("user");
     });
     describe("createUser", () => {
         it("successfully create a user", async () => {
@@ -43,7 +38,7 @@ describe("UserDaoTest", () => {
                 await userDao.getUserById("6ecb8179-2bd3-4873-8a7d-a974e86be80b");
             } catch (error) {
                 expect(error.status).to.equal(404);
-                expect(error.message).to.equal("User with given id not found: 6ecb8179-2bd3-4873-8a7d-a974e86be80b");
+                expect(error.message).to.match(/User with given id not found/);
             }
         });
     });

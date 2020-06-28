@@ -1,31 +1,24 @@
-import Controller from "../util/rest/controller";
-import { Router, NextFunction, Response } from "express";
+import { NextFunction, Response } from "express";
+import { AbstractController } from "../util/rest/controller";
 import RequestWithUser from "../util/rest/request";
-import { Formatter } from "../util/formatter";
-import APP_CONSTANTS from "../constants";
 
-class HealthController implements Controller {
-  public path: string = "/health";
-  public router: Router = Router();
-
-  private fmt: Formatter = new Formatter();
+class HealthController extends AbstractController {
 
   constructor() {
-    this.initializeRouter();
+    super("/health");
+    this.initializeRoutes();
   }
 
-  private initializeRouter() {
-    this.router.get(`${this.path}`, this.healthResponse);
+  protected initializeRoutes = () => {
+    this.router.get(`${this.path}`, this.asyncRouteHandler(this.healthResponse));
   }
 
   private healthResponse = async (request: RequestWithUser, response: Response, next: NextFunction) => {
-    try {
-      const data: any = { message: "Service Up"};
-      response.status(200);
-      response.send(this.fmt.formatResponse(data, Date.now() - request.startTime, "OK", 1));
-    } catch (error) {
-      return next(error);
-    }
+
+    const data: any = { message: "Service Up" };
+    response.status(200);
+    response.send(this.fmt.formatResponse(data, Date.now() - request.startTime, "OK", 1));
+
   }
 }
 

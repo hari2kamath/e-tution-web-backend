@@ -1,6 +1,7 @@
-import { Connection } from "typeorm";
+import { getRepository } from "typeorm";
+import rdbmsConfig = require("../../../app/config/rdbms");
 
-export const clearDb = async (connection: Connection, entityName: string) => {
-    const repository = await connection.getRepository(entityName);
-    await repository.query(`DELETE FROM "${entityName}" CASCADE;`);
+export const clearDb = async (entityName: string) => {
+    const repository = getRepository(entityName);
+    await repository.query(`DELETE FROM ${rdbmsConfig.schema}.${entityName} CASCADE;`);
 };

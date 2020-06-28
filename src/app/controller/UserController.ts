@@ -1,33 +1,32 @@
-import { NextFunction, Response, Router } from "express";
-import Controller from "../util/rest/controller";
-import RequestWithUser from "../util/rest/request";
-import { Formatter } from "../util/formatter";
+import { NextFunction, Response } from "express";
 import APP_CONSTANTS from "../constants";
-import validationMiddleware from "../middleware/validationMiddleware";
 import { UserDto } from "../dto/UserDto";
 import { UserParamsDto } from "../dto/UserParamsDto";
+import validationMiddleware from "../middleware/validationMiddleware";
 import { UserService } from "../service/UserService";
+import { AbstractController } from "../util/rest/controller";
+import RequestWithUser from "../util/rest/request";
 
 /**
  * Implementation of the UserController route.
  *
  * @param userService service implementation providing user related functionality
  */
-class UserController implements Controller {
-    public path: string = `${APP_CONSTANTS.apiPrefix}/users`;
-    public router: Router = Router();
-    private fmt: Formatter = new Formatter();
+class UserController extends AbstractController {
+
     private userService: UserService;
 
     constructor(userService: UserService) {
-        this.userService = userService;
+        super(`${APP_CONSTANTS.apiPrefix}/users`);
         this.initializeRoutes();
+        this.userService = userService;
     }
 
-    private initializeRoutes(): void {
-        this.router.post(`${this.path}`, validationMiddleware(UserDto, APP_CONSTANTS.body), this.createUser);
-        this.router.get(
-            `${this.path}/:id`, validationMiddleware(UserParamsDto, APP_CONSTANTS.params), this.getUserById);
+    protected initializeRoutes = (): void => {
+        this.router.post(`${this.path}`, validationMiddleware(UserDto, APP_CONSTANTS.body),
+            this.asyncRouteHandler(this.createUser));
+        this.router.get(`${this.path}/:id`, validationMiddleware(UserParamsDto, APP_CONSTANTS.params),
+            this.asyncRouteHandler(this.getUserById));
     }
 
     /**
@@ -36,13 +35,11 @@ class UserController implements Controller {
      * @returns User record
      */
     private createUser = async (request: RequestWithUser, response: Response, next: NextFunction) => {
-        try {
-            const userData: UserDto = request.body;
-            const userDetail = await this.userService.createUser(userData);
-            response.send(this.fmt.formatResponse(userDetail, Date.now() - request.startTime, "OK"));
-        } catch (error) {
-            return next(error);
-        }
+
+        const userData: UserDto = request.body;
+        const userDetail = await this.userService.createUser(userData);
+        response.send(this.fmt.formatResponse(userDetail, Date.now() - request.startTime, "OK"));
+
     }
 
     /**
@@ -51,13 +48,11 @@ class UserController implements Controller {
      * @returns User record
      */
     private getUserById = async (request: RequestWithUser, response: Response, next: NextFunction) => {
-        try {
-            const userId: string = request.params.id;
-            const userDetail = await this.userService.getUserById(userId);
-            response.send(this.fmt.formatResponse(userDetail, Date.now() - request.startTime, "OK"));
-        } catch (error) {
-            return next(error);
-        }
+
+        const userId: string = request.params.id;
+        const userDetail = await this.userService.getUserById(userId);
+        response.send(this.fmt.formatResponse(userDetail, Date.now() - request.startTime, "OK"));
+
     }
 }
 

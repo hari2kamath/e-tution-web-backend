@@ -6,13 +6,13 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import helmet from "helmet";
 import logger from "./config/logger";
-import Controller from "./util/rest/controller";
+import { Controller } from "./util/rest/controller";
 import RequestWithUser from "./util/rest/request";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./config/openapi.json";
 import errorMiddleware from "./middleware/errorMiddleware";
 import cors = require("cors");
-
+import constants from "./constants";
 /**
  * Express application wrapper class to centralize initialization
  */
@@ -81,7 +81,7 @@ class App extends EventEmitter {
    * Adds Swagger (OAPI) generated documentation route
    */
   private initializeApiDocs() {
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    this.app.use(`/${constants.service}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 
   /**

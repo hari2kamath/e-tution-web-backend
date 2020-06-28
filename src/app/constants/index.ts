@@ -3,7 +3,9 @@ const APP_CONSTANTS = {
     params: "params",
     query: "query",
     body: "body",
-    key: "value",
+
+    // Add the short name of the service below
+    service: "svc"
 };
 
 export default APP_CONSTANTS;

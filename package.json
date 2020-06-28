@@ -6,14 +6,13 @@
   "scripts": {
     "build": "rm -rf ./dist && ./node_modules/.bin/tsc",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
-    "start-production": "NODE_ENV=production node dist/app/server.js",
-    "dev": "NODE_ENV=development tsc-watch --onSuccess \"node ./dist/app/server.js\"",
-    "template-migration": "npx tsc && ts-node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:create -n",
+    "start-prd": "NODE_ENV=production node dist/app/server.js",
+    "dev": "NODE_ENV=local tsc-watch --onSuccess \"node ./dist/app/server.js\"",
+    "template-migration": "ts-node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:create -n",
     "add-migration": "npm run build && node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:generate -n",
-    "migrate": "npm run build && NODE_ENV=production node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:run",
+    "migrate": "npm run build && NODE_ENV=production node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:run -t=each",
     "rollback": "npm run build && node ./node_modules/typeorm/cli --f ./dist/app/config/rdbms.js migration:revert",
-    "test": "NODE_ENV=test nyc --reporter=html --reporter=lcov mocha --timeout 20000 dist/test/  --recursive --exit",
-    "test-ts": "tsc && NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 10000 dist/test/  --recursive --exit",
+    "test": "tsc && NODE_ENV=test nyc --reporter=html --reporter=lcov mocha --timeout 20000 dist/test/  --recursive --exit",
     "debug": "node --nolazy --nolazy --inspect-brk=9229 dist/app/server.js"
   },
   "dependencies": {
